@@ -21,7 +21,7 @@ dependencies:
   
   # Media/Music
   just_audio: ^0.9.40
-  on_audio_query: ^3.2.0
+  on_audio_query: ^2.9.0
   
   # HTTP/Weather
   http: ^1.2.2
@@ -42,4 +42,3 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-

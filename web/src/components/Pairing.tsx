@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { QRCodeCanvas } from 'qrcode.react'
 
 function getHost() {
@@ -14,8 +14,13 @@ interface PairingProps {
 
 export default function Pairing({ onConnect, connected }: PairingProps) {
 	const [wsUrl, setWsUrl] = useState<string | null>(null)
+	const hasFetchedRef = useRef(false)
 
 	useEffect(() => {
+		// Only fetch token once when component mounts
+		if (hasFetchedRef.current) return
+		
+		hasFetchedRef.current = true
 		const host = getHost()
 		fetch(`http://${host}:8080/token`)
 			.then((r) => r.json())
@@ -25,8 +30,10 @@ export default function Pairing({ onConnect, connected }: PairingProps) {
 			})
 			.catch(() => {
 				console.error('Failed to get token from server')
+				hasFetchedRef.current = false // Allow retry on error
 			})
-	}, [onConnect])
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []) // Empty deps - only run once on mount
 
 	const qrValue = useMemo(() => wsUrl ?? '', [wsUrl])
 
