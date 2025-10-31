@@ -18,6 +18,8 @@ class WebSocketService extends ChangeNotifier {
 
   Future<void> connect(String wsUrl) async {
     try {
+      disconnect(); // Disconnect any existing connection first
+      
       _channel = WebSocketChannel.connect(Uri.parse(wsUrl));
       
       // Send hello message
@@ -29,18 +31,24 @@ class WebSocketService extends ChangeNotifier {
       // Listen for acknowledgment
       _channel!.stream.listen(
         (message) {
-          final data = jsonDecode(message);
-          if (data['type'] == 'ack' && data['role'] == 'phone') {
-            _isConnected = true;
-            notifyListeners();
-            _startSendingData();
+          try {
+            final data = jsonDecode(message);
+            if (data['type'] == 'ack' && data['role'] == 'phone') {
+              _isConnected = true;
+              notifyListeners();
+              _startSendingData();
+            }
+          } catch (e) {
+            debugPrint('Error parsing message: $e');
           }
         },
         onError: (error) {
+          debugPrint('WebSocket error: $error');
           _isConnected = false;
           notifyListeners();
         },
         onDone: () {
+          debugPrint('WebSocket closed');
           _isConnected = false;
           notifyListeners();
         },
@@ -49,6 +57,7 @@ class WebSocketService extends ChangeNotifier {
       debugPrint('WebSocket connection error: $e');
       _isConnected = false;
       notifyListeners();
+      rethrow; // Re-throw to allow caller to handle error
     }
   }
 

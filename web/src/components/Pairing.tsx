@@ -1,41 +1,11 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
 import { QRCodeCanvas } from 'qrcode.react'
 
-function getHost() {
-	// Use current page host for HTTP, but WS server runs on port 8080 by default
-	const { hostname } = window.location
-	return hostname
-}
-
 interface PairingProps {
-  onConnect: (wsUrl: string) => void
+  qrValue: string
   connected: boolean
 }
 
-export default function Pairing({ onConnect, connected }: PairingProps) {
-	const [wsUrl, setWsUrl] = useState<string | null>(null)
-	const hasFetchedRef = useRef(false)
-
-	useEffect(() => {
-		// Only fetch token once when component mounts
-		if (hasFetchedRef.current) return
-		
-		hasFetchedRef.current = true
-		const host = getHost()
-		fetch(`http://${host}:8080/token`)
-			.then((r) => r.json())
-			.then((data) => {
-				setWsUrl(data.wsUrl)
-				onConnect(data.wsUrl)
-			})
-			.catch(() => {
-				console.error('Failed to get token from server')
-				hasFetchedRef.current = false // Allow retry on error
-			})
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []) // Empty deps - only run once on mount
-
-	const qrValue = useMemo(() => wsUrl ?? '', [wsUrl])
+export default function Pairing({ qrValue, connected }: PairingProps) {
 
 	return (
 		<div className="widget-card rounded-xl p-6 sm:p-8 flex flex-col gap-4 items-center justify-center text-center">

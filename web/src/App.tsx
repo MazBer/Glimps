@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useWebSocket } from './hooks/useWebSocket'
 import ClockWidget from './components/ClockWidget'
 import MediaWidget from './components/MediaWidget'
@@ -6,8 +6,34 @@ import BatteryWidget from './components/BatteryWidget'
 import WeatherWidget from './components/WeatherWidget'
 import Pairing from './components/Pairing'
 
+function getHost() {
+  const { hostname } = window.location
+  return hostname
+}
+
 function App() {
   const [wsUrl, setWsUrl] = useState<string | null>(null)
+  const [qrValue, setQrValue] = useState<string | null>(null)
+  const tokenFetchedRef = useRef(false)
+  
+  // Fetch token once on mount, persist it
+  useEffect(() => {
+    if (tokenFetchedRef.current) return
+    tokenFetchedRef.current = true
+    
+    const host = getHost()
+    fetch(`http://${host}:8080/token`)
+      .then((r) => r.json())
+      .then((data) => {
+        setQrValue(data.wsUrl)
+        setWsUrl(data.wsUrl)
+      })
+      .catch(() => {
+        console.error('Failed to get token from server')
+        tokenFetchedRef.current = false // Allow retry on error
+      })
+  }, [])
+  
   const { data, status } = useWebSocket({
     wsUrl,
     onConnect: () => console.log('WebSocket connected'),
@@ -22,8 +48,8 @@ function App() {
           <ClockWidget data={data?.clock || null} />
 
           {/* Pairing/QR - Only show if not connected */}
-          {status !== 'connected' && (
-            <Pairing onConnect={setWsUrl} connected={status === 'connected'} />
+          {status !== 'connected' && qrValue && (
+            <Pairing qrValue={qrValue} connected={status === 'connected'} />
           )}
 
           {/* Weather Widget */}
