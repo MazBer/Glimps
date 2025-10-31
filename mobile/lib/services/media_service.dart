@@ -2,7 +2,7 @@ import 'package:just_audio/just_audio.dart';
 import '../models/glimps_data.dart';
 
 class MediaService {
-  final AudioPlayer? _audioPlayer = AudioPlayer();
+  AudioPlayer? _audioPlayer;
 
   Future<MediaData> getCurrentMedia() async {
     try {

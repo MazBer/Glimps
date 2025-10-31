@@ -20,8 +20,9 @@ class _PairingScreenState extends State<PairingScreen> {
   }
 
   void _handleBarcode(BarcodeCapture barcodeCapture) {
-    final barcode = barcodeCapture.barcodes.firstOrNull;
-    if (barcode != null && barcode.rawValue != null) {
+    if (barcodeCapture.barcodes.isEmpty) return;
+    final barcode = barcodeCapture.barcodes.first;
+    if (barcode.rawValue != null) {
       final wsUrl = barcode.rawValue!;
       if (wsUrl.startsWith('ws://')) {
         final wsService = Provider.of<WebSocketService>(context, listen: false);
