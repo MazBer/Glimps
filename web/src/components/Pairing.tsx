@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { QRCodeCanvas } from 'qrcode.react'
 
 function getHost() {
@@ -7,40 +7,26 @@ function getHost() {
 	return hostname
 }
 
-export default function Pairing() {
-	const [token, setToken] = useState<string | null>(null)
+interface PairingProps {
+  onConnect: (wsUrl: string) => void
+  connected: boolean
+}
+
+export default function Pairing({ onConnect, connected }: PairingProps) {
 	const [wsUrl, setWsUrl] = useState<string | null>(null)
-	const [status, setStatus] = useState<'idle' | 'connecting' | 'connected' | 'error'>('idle')
-	const wsRef = useRef<WebSocket | null>(null)
 
 	useEffect(() => {
 		const host = getHost()
 		fetch(`http://${host}:8080/token`)
 			.then((r) => r.json())
 			.then((data) => {
-				setToken(data.token)
 				setWsUrl(data.wsUrl)
+				onConnect(data.wsUrl)
 			})
-			.catch(() => setStatus('error'))
-	}, [])
-
-	useEffect(() => {
-		if (!token || !wsUrl) return
-		setStatus('connecting')
-		const ws = new WebSocket(wsUrl)
-		wsRef.current = ws
-
-		ws.addEventListener('open', () => {
-			ws.send(JSON.stringify({ type: 'hello', role: 'display' }))
-			setStatus('connected')
-		})
-		ws.addEventListener('close', () => setStatus('error'))
-		ws.addEventListener('error', () => setStatus('error'))
-
-		return () => {
-			ws.close()
-		}
-	}, [token, wsUrl])
+			.catch(() => {
+				console.error('Failed to get token from server')
+			})
+	}, [onConnect])
 
 	const qrValue = useMemo(() => wsUrl ?? '', [wsUrl])
 
@@ -56,8 +42,8 @@ export default function Pairing() {
 				<p className="text-white/60">Generating QR...</p>
 			)}
 			<p className="text-sm mt-2">
-				<span className={status === 'connected' ? 'text-primary' : 'text-white/60'}>
-					{status}
+				<span className={connected ? 'text-primary' : 'text-white/60'}>
+					{connected ? 'connected' : 'waiting for phone...'}
 				</span>
 			</p>
 		</div>
