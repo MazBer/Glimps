@@ -1,0 +1,45 @@
+name: glimps_mobile
+description: Glimps mobile app - Send glance data to PC
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # WebSocket
+  web_socket_channel: ^3.0.1
+  
+  # QR Code Scanner
+  mobile_scanner: ^5.2.3
+  
+  # Battery
+  battery_plus: ^6.0.4
+  
+  # Media/Music
+  just_audio: ^0.9.40
+  on_audio_query: ^3.2.0
+  
+  # HTTP/Weather
+  http: ^1.2.2
+  
+  # Location
+  geolocator: ^13.0.1
+  
+  # UI
+  cupertino_icons: ^1.0.8
+  
+  # State management
+  provider: ^6.1.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+
