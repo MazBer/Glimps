@@ -2,6 +2,8 @@
 
 A StandBy-style glance screen that displays your phone's information on your PC. Mobile app sends real-time data (clock, media, battery, weather) to a web app via WebSocket over your local network.
 
+![Sample 1](sample1.png)
+
 ## Project Structure
 
 ```
