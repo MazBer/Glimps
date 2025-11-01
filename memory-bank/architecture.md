@@ -3,7 +3,7 @@
 ## System Components
 
 ### 1. Mobile App (Flutter - Android & iOS)
-**Location**: `/mobile` (to be created)
+**Location**: `/mobile` (exists in repository)
 
 **Responsibilities**:
 - Collect device data (clock, media, battery)

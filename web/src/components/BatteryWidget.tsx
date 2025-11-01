@@ -9,44 +9,75 @@ export default function BatteryWidget({ phoneBattery, pcBattery }: BatteryWidget
   const renderBatteryCircle = (battery: BatteryData | null, label: string) => {
     if (!battery) return null
 
-    const circumference = 2 * Math.PI * 54 // radius 54
-    const offset = circumference - (battery.level / 100) * circumference
-
     return (
-      <div className="widget-card rounded-xl p-6 flex flex-col justify-between mb-4 last:mb-0">
-        <div className="flex gap-4 justify-between items-start">
-          <p className="text-white text-lg font-medium leading-normal">{label}</p>
-          {battery.isCharging && (
-            <p className="text-primary text-sm font-normal leading-normal">Charging</p>
-          )}
-        </div>
-        <div className="relative flex items-center justify-center my-4">
-          <svg className="size-32 transform -rotate-90" viewBox="0 0 120 120">
-            <circle
-              cx="60"
-              cy="60"
-              fill="none"
-              r="54"
-              stroke="rgba(19, 200, 236, 0.2)"
-              strokeWidth="12"
-            />
-            <circle
-              className="text-primary"
-              cx="60"
-              cy="60"
-              fill="none"
-              r="54"
-              stroke="currentColor"
-              strokeDasharray={circumference}
-              strokeDashoffset={offset}
-              strokeLinecap="round"
-              strokeWidth="12"
-              style={{ filter: 'drop-shadow(0 0 4px currentColor)' }}
-            />
-          </svg>
-          <div className="absolute flex flex-col items-center justify-center">
-            <span className="text-white text-3xl font-bold">{battery.level}%</span>
-          </div>
+      <div className="glass-card h-full p-6">
+        <h3 
+          className="text-white/80 font-light mb-4 text-lg"
+          style={{
+            fontFamily: 'Space Grotesk, sans-serif',
+            fontWeight: 300,
+            letterSpacing: '0.02em'
+          }}
+        >
+          Battery Status
+        </h3>
+        
+        <div className="space-y-4">
+          {[
+            { type: 'phone', data: phoneBattery, label: 'Phone' },
+            { type: 'pc', data: pcBattery, label: 'PC' }
+          ].map(({ type, data, label }) => (
+            data && (
+              <div key={type} className="flex flex-col">
+                <div className="flex justify-between items-center mb-1">
+                  <span className="text-white/60 text-sm">{label}</span>
+                  <div className="flex items-center">
+                    {data.isCharging && (
+                      <span className="material-symbols-outlined text-[#4ade80] text-base mr-1">
+                        {Math.round(data.level)}%
+                      </span>
+                    )}
+                    <span 
+                      className="font-light"
+                      style={{
+                        fontSize: '1.75rem',
+                        fontFamily: 'Comfortaa, sans-serif',
+                        fontWeight: 300,
+                        color: data.level < 20 ? '#ef4444' : 'white'
+                      }}
+                    >
+                      {data.level}%
+                    </span>
+                  </div>
+                </div>
+                
+                <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full rounded-full transition-all duration-300"
+                    style={{
+                      width: `${data.level}%`,
+                      background: `linear-gradient(90deg, ${data.level < 20 ? '#ef4444' : data.isCharging ? '#4ade80' : '#3b82f6'} 0%, ${data.level < 20 ? '#f87171' : data.isCharging ? '#86efac' : '#60a5fa'} 100%)`
+                    }}
+                  />
+                        : 'bg-gradient-to-r from-[#13C8EC] to-[#0ea5e9]'
+                    }`}
+                    style={{ width: `${data.level}%` }}
+                  >
+                    {data.isCharging && (
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent to-white/20 animate-pulse"></div>
+                    )}
+                  </div>
+                </div>
+                
+                {data.level < 20 && !data.isCharging && (
+                  <p className="text-red-400 text-xs mt-1 flex items-center">
+                    <span className="material-symbols-outlined text-sm mr-1">warning</span>
+                    Low battery
+                  </p>
+                )}
+              </div>
+            )
+          ))}
         </div>
       </div>
     )

@@ -25,19 +25,63 @@ export default function WeatherWidget({ data }: WeatherWidgetProps) {
   }
 
   return (
-    <div className="widget-card flex items-stretch justify-between gap-4 rounded-xl p-6">
-      <div className="flex flex-col gap-2 flex-[2_2_0px]">
-        <p className="text-white text-5xl font-bold leading-tight">{data.tempF}°F</p>
-        <p className="text-[#92c0c9] text-base font-normal leading-normal">{data.condition}</p>
-        <p className="text-white/80 text-sm font-light leading-normal mt-auto">{data.location}</p>
-      </div>
-      <div className="flex items-center justify-center flex-1">
-        <span
-          className="material-symbols-outlined text-primary text-8xl"
-          style={{ filter: 'drop-shadow(0 0 8px currentColor)' }}
+    <div className="glass-card h-full flex flex-col p-6">
+      <div className="flex-1 flex flex-col items-center justify-center text-center">
+        {/* Weather Icon */}
+        <div className="text-[100px] leading-none mb-2 text-white/90">
+          <span className="material-symbols-outlined">{getWeatherIcon(data.condition)}</span>
+        </div>
+        
+        {/* Temperature */}
+        <p 
+          className="text-white font-light leading-none mb-1"
+          style={{
+            fontSize: 'clamp(3.5rem, 12vw, 5rem)',
+            fontFamily: 'Comfortaa, sans-serif',
+            fontWeight: 300,
+            lineHeight: 1,
+            textShadow: '0 2px 8px rgba(0, 0, 0, 0.15)'
+          }}
         >
-          {getWeatherIcon(data.condition)}
-        </span>
+          {Math.round(data.temperature)}°
+        </p>
+        
+        {/* Condition */}
+        <p 
+          className="text-white/80 text-xl mb-2"
+          style={{
+            fontFamily: 'Space Grotesk, sans-serif',
+            fontWeight: 300,
+            textTransform: 'capitalize',
+            letterSpacing: '0.02em'
+          }}
+        >
+          {data.condition.toLowerCase()}
+        </p>
+        
+        {/* Location */}
+        <div className="flex items-center justify-center text-white/60 mb-4">
+          <span className="material-symbols-outlined text-base mr-1">location_on</span>
+          <span className="text-sm">{data.location}</span>
+        </div>
+        
+        {/* Additional Info */}
+        <div className="grid grid-cols-2 gap-3 mt-2 w-full max-w-[180px] mx-auto">
+          <div className="flex items-center justify-center">
+            <span className="material-symbols-outlined text-white/60 mr-1 text-lg">air</span>
+            <span className="text-white/80 text-sm">{data.windSpeed} km/h</span>
+          </div>
+          <div className="flex items-center justify-center">
+            <span className="material-symbols-outlined text-white/60 mr-1 text-lg">water_drop</span>
+            <span className="text-white/80 text-sm">{data.humidity}%</span>
+          </div>
+            humidity_percentage
+          </span>
+          <p className="text-[rgba(250,250,250,0.8)] text-sm">
+            {data.humidity}%
+          </p>
+          <p className="text-[rgba(250,250,250,0.5)] text-xs">Humidity</p>
+        </div>
       </div>
     </div>
   )

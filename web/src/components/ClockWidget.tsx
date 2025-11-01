@@ -20,10 +20,33 @@ export default function ClockWidget({ data }: ClockWidgetProps) {
   })
 
   return (
-    <div className="widget-card rounded-xl p-6 sm:p-8 flex flex-col items-center justify-center text-center lg:col-span-3 xl:col-span-2">
-      <h1 className="text-white tracking-tight text-5xl sm:text-7xl font-bold leading-tight">{time}</h1>
-      <p className="text-white/80 text-lg font-normal leading-normal pt-2">{date}</p>
+    <div className="w-full px-8 py-12 text-center">
+      <h1 
+        className="text-white font-light tracking-tight leading-none"
+        style={{ 
+          fontSize: 'clamp(5rem, 25vw, 20rem)',
+          fontFamily: 'Comfortaa, sans-serif',
+          fontWeight: 300,
+          lineHeight: 0.8,
+          letterSpacing: '-0.05em',
+          textShadow: '0 2px 10px rgba(0, 0, 0, 0.2)'
+        }}
+      >
+        {time}
+      </h1>
+      <p 
+        className="text-white/70 font-light mt-2"
+        style={{ 
+          fontSize: 'clamp(1.75rem, 5vw, 3.5rem)',
+          fontFamily: 'Comfortaa, sans-serif',
+          fontWeight: 300,
+          lineHeight: 1.2,
+          letterSpacing: '0.02em',
+          textShadow: '0 1px 4px rgba(0, 0, 0, 0.1)'
+        }}
+      >
+        {date}
+      </p>
     </div>
   )
 }
-
